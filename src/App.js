@@ -1,73 +1,127 @@
 import React, { Component } from 'react';
-import './App.css';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import {TextField, Button} from '@material-ui/core';
-import axios from 'axios';
+import { getArtists } from './services/api';
 
-const API_URL = 'https://ws.audioscrobbler.com/2.0/?limit=5&format=json&method=artist.search&api_key=' + process.env.REACT_APP_LASTFM_APPKEY;
+import {
+  TextField,
+  Button,
+  List
+} from '@material-ui/core';
 
-const isEmplt = (str) => str.length === 0;
+import { ArtistCard } from './components/ArtistCard';
+import { SearchResult } from './components/SearchResult';
+
+import './App.css';
+import { get } from 'https';
+
+const isEmpty = (str) => str.length === 0;
 class App extends Component {
   state = {
     searchTerm: '',
-    artists: []
+    savedArtists: []
   }
+
+  componentDidMount() {
+    const existing = localStorage.getItem('savedArtists')
+    if (existing) {
+      this.setState({ savedArtists: JSON.parse(existing) })
+    }
+  }
+
   onTextChange = (event) => {
     const value = event.target.value;
 
-    this.setState({searchTerm: value});
+    this.setState({ searchTerm: value });
   }
 
-search = (terms) => {
-  const request = API_URL + '&artist=' + terms;
+search = async (terms) => {
 
-  console.log(request);
+  const artists = await getArtists(terms);
+  this.setState({ artists: artists })
+}
 
-  axios.get(request).then((response) => {
-    this.setState({ artists: response.data.results.artistmatches.artist});
+onSearchClick = () => {
+  this.search(this.state.searchTerm);
+}
+
+clearSearch = () => {
+  this.setState({
+    searchTerm: '',
+    artists: []
   })
 }
 
-  onSearchClick = () => {
-    this.search(this.state.searchTerm);
-  }
-//https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=cher&api_key=d000cff27039229f64111c30e925a415&format=json
+updateArtists = (newArtists) => {
+  this.setState({ savedArtists: newArtists })
+  localStorage.setItem('savedArtists', JSON.stringify(newArtists));
+}
 
+deleteArtist = (artist) => {
+  const result = this.state.savedArtists.filter(item => item.name !== artist.name);
+  this.updateArtists(result);
+}
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-            <AppBar position="static" color="primary">
-            <Toolbar>
-              <Typography variant="h6" color="inherit">
-                Photos
-              </Typography>
-              <TextField 
-                placeholder="Search on Spotify" 
-                onChange={this.onTextChange}
-                value={this.state.searchTerm}
-              />
-              <Button 
-              onClick={this.onSearchClick} 
-              disabled={this.state.searchTerm.length === 0}
-              >Search
-              </Button>
-            </Toolbar>
-           </AppBar>
-        </header>
-        <p>{process.env.REACT_APP_LASTFM_APPKEY}</p>
-        <ul>
-          {this.state.artists.map((artist) => {
-            return <li><span>{artist.name}</span></li>
-          })}
-        </ul>
-    
-      </div>
+onResultClick = (artist) => {
+  this.clearSearch();
+  const savedArtists = this.state.savedArtists;
+  savedArtists.push(artist);
+  this.updateArtists(savedArtists);
+}
+
+render() {
+  const results = this.state.artists || [];
+  return (
+    <div className="App">
+      <header className="App-header">
+        <AppBar position="static" color="primary">
+          <Toolbar className="search-bar">
+            <Typography variant="h6" color="inherit">
+              Last Fm Search
+            </Typography>
+            <TextField
+              placeholder="Search on Last.fm"
+              className="search-input"
+              onChange={this.onTextChange}
+              value={this.state.searchTerm}
+            />
+            <Button
+              onClick={this.onSearchClick}
+              variant="contained"
+              color="secondary"
+              disabled={isEmpty(this.state.searchTerm)}
+            >
+              Search
+            </Button>
+            {!isEmpty(this.state.searchTerm) && (
+              <Button
+                onClick={this.clearSearch}
+                variant="contained"
+              >
+                Clear
+              </Button>)
+            }
+          </Toolbar>
+        </AppBar>
+      </header>
+
+      <List className="search-results">
+          {
+             results.map((artist, index) => {
+              return <SearchResult key={index} artist={artist} onResultClick={this.onResultClick} />
+            })
+          }
+        </List>
+        <div className="artist-container">
+          {
+             this.state.savedArtists.map((artist, index) => {
+              return <ArtistCard artist={artist} key={index} deleteArtist={this.deleteArtist} />
+            })
+          }
+        </div>
+        </div>
     );
   }
 }
-
 export default App;
