@@ -1,11 +1,6 @@
-.search-bar h6 {
-  
-}
-
 div.search-input {
   margin-right: 10px;
   margin-left: 10%;
-  
 }
 
 .search-input input {
@@ -28,35 +23,36 @@ ul.search-results:hover .MuiButtonBase-root-137:hover{
 .result .add-button {
   opacity: 0;
   transition: opacity 2ms;
-  
 }
 
 .result:hover .add-button {
   opacity:1;
   transition: opacity 2ms;
-  
 }
 .artist-container {
   display: flex;
   padding: 20px;
+  flex-wrap: wrap;
 }
 
 .image-container {
-  width: 240px;
+  width: 220px;
   display: flex;
   align-items: center;
 }
 
 .image-container img {
-  max-height: 174px;
-  margin-left: 17px;
-  margin-top: 17px;
-  margin-right: 17px;
+  height: 220px;
 }
 
 .artist-card {
   max-width: 300px;
-  width: 240px;
+  width: 220px;
   min-height: 320px;
   margin: 10px;
+  border-radius: 5px;
 } 
+
+h6{
+  padding-left: 8px;
+}

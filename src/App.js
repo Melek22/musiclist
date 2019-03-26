@@ -106,6 +106,8 @@ render() {
         </AppBar>
       </header>
 
+     
+
       <List className="search-results">
           {
              results.map((artist, index) => {

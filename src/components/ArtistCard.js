@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardActions, Button } from '@material-ui/core'
 
 import { Star, StarBorder } from '@material-ui/icons'
+import StarRatingComponent from 'react-star-rating-component';
 
 export const ArtistCard = (props) => {
   const { artist, deleteArtist } = props;
@@ -15,12 +16,12 @@ export const ArtistCard = (props) => {
         <h3>{artist.name}</h3>
         <p>{artist.listeners} listeners.</p>
         <p>
-          <StarBorder />
+        <StarRatingComponent />
         </p>
       </CardContent>
       <CardActions>
         <Button size="small" color="primary">
-          Share
+          Refresh
       </Button>
         <Button size="small" color="secondary" onClick={() => deleteArtist(artist)}>
           Delete
