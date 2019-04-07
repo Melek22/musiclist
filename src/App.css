@@ -56,3 +56,27 @@ ul.search-results:hover .MuiButtonBase-root-137:hover{
 h6{
   padding-left: 8px;
 }
+
+.MuiAppBar-colorPrimary-8 {
+  background-color: #292929 !important;
+}
+
+.MuiButton-contained-122.MuiButton-disabled-131 {
+  color: rgba(255, 255, 255, 0.26) !important;
+}
+
+.MuiButton-containedSecondary-124 {
+  background-color: #444444 !important;
+}
+
+.MuiInput-underline-85:after {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.26) !important;
+}
+
+.MuiInput-underline-85:before {
+  border-bottom: 1px solid rgba(114, 114, 114, 0.42) !important;
+}
+
+.MuiTypography-colorInherit-70 {
+  color: #838383 !important;
+}
